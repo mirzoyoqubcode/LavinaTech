@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           Bookshelf App
         </Typography>
+        <Button color="inherit" onClick={() => navigate("/addbook")}>Add</Button>
         <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>

@@ -14,12 +14,13 @@ const generateSignature = (
   body: string,
   userSecret: string
 ): string => {
-  const stringToSign = `${method}+${url}+${body}+${userSecret}`;
+  const stringToSign = `${method}${url}${body}${userSecret}`;
   return md5(stringToSign).toString();
 };
 
+
 const Main: React.FC = () => {
-  const [books, setBooks] = useState<any[]>([]); // Initialize as an empty array
+  const [books, setBooks] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
   const { key, secret } = useSelector((state: RootState) => state.auth);
 
@@ -28,23 +29,20 @@ const Main: React.FC = () => {
     try {
       const method = "GET";
       const url = "/books";
-      const body = ""; // No body for GET request
+      const body = "";
       const sign = generateSignature(method, url, body, secret!);
 
-      const result = await axios.get("https://no23.lavina.tech/books", {
+      const result = await axios.get(`https://no23.lavina.tech${url}`, {
         headers: {
           Key: key!,
           Sign: sign,
         },
       });
 
-      // Log the entire response to inspect the data structure
       console.log("Fetched Books:", result.data);
 
-      // Check if the response indicates success
       if (result.data.isOk) {
-        setBooks(result.data.data || []); // Default to an empty array if data is null
-        // Log the books array to see what it contains
+        setBooks(result.data.data || []);
         console.log("Books Available:", result.data.data);
       } else {
         setError(result.data.message || "Failed to fetch books.");
@@ -55,6 +53,8 @@ const Main: React.FC = () => {
       );
     }
   };
+  console.log(key);
+  console.log(secret);
 
   useEffect(() => {
     if (key && secret) {

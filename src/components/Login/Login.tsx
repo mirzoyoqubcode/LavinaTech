@@ -1,17 +1,16 @@
-// src/components/Login/Login.tsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "./Login.module.scss";
 import { TextField, Button, Typography, Box } from "@mui/material";
-import md5 from "crypto-js/md5"; // Import md5 for signature generation
+import md5 from "crypto-js/md5";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [email, setEmail] = useState(""); // Keep the email field
+  const [email, setEmail] = useState("");
   const [key, setKey] = useState("");
   const [secret, setSecret] = useState("");
   const [error, setError] = useState("");
@@ -20,8 +19,8 @@ const Login: React.FC = () => {
     method: string,
     url: string,
     userSecret: string
-  ) => {
-    const stringToSign = `${method}+${url}+${userSecret}`;
+  ): string => {
+    const stringToSign = `${method}${url}${userSecret}`;
     return md5(stringToSign).toString();
   };
 
@@ -31,21 +30,22 @@ const Login: React.FC = () => {
     const method = "GET";
     const url = "/myself";
     const sign = generateSignature(method, url, secret);
+    console.log("Sign:", sign);
 
     try {
-      const response = await axios.get("`https://no23.lavina.tech/`${}`",  {
+      const response = await axios.get("https://no23.lavina.tech/myself", {
         headers: {
           Key: key,
           Sign: sign,
         },
       });
+      console.log(response.data.data);
 
-      const { data } = response.data;
-
-      // Dispatch credentials to Redux
+      const data = response.data.data;
+      console.log("Response:", data);
       dispatch(setCredentials({ key: data.key, secret: data.secret }));
       console.log("Login successful");
-      navigate("/"); // Redirect to Main after successful login
+      navigate("/");
     } catch (err: any) {
       console.error("Login error:", err.response ? err.response.data : err);
       setError(
@@ -66,14 +66,14 @@ const Login: React.FC = () => {
           margin="normal"
         />
         <TextField
-          label="Key"
+          label="Username"
           value={key}
           onChange={(e) => setKey(e.target.value)}
           fullWidth
           margin="normal"
         />
         <TextField
-          label="Secret"
+          label="Password"
           type="password"
           value={secret}
           onChange={(e) => setSecret(e.target.value)}
@@ -85,6 +85,14 @@ const Login: React.FC = () => {
         </Button>
         {error && <Typography color="error">{error}</Typography>}
       </form>
+      <Box mt={2}>
+        <Typography variant="body2">
+          Don't have an account?{" "}
+          <Link to="/register" className={styles.link}>
+            Register here
+          </Link>
+        </Typography>
+      </Box>
     </Box>
   );
 };

@@ -4,7 +4,7 @@ import axios from "axios";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "./Register.module.scss";
 
 const Register: React.FC = () => {
@@ -30,7 +30,6 @@ const Register: React.FC = () => {
     setError("");
 
     try {
-      // Create the user
       const response = await axios.post(
         "https://no23.lavina.tech/signup",
         formData,
@@ -41,16 +40,12 @@ const Register: React.FC = () => {
         }
       );
 
-      // After successful registration, extract key and secret from the response
       const { key, secret } = response.data.data;
 
-      // Dispatch credentials to Redux store
       dispatch(setCredentials({ key, secret }));
 
-      // Redirect to the main page
       navigate("/");
     } catch (err: any) {
-      // Handle any errors during registration
       setError(
         err.response?.data?.message || "An error occurred during registration."
       );
@@ -70,7 +65,7 @@ const Register: React.FC = () => {
           onChange={handleChange}
           fullWidth
           margin="normal"
-          required // Optional: Add required validation
+          required
         />
         <TextField
           label="Email"
@@ -79,32 +74,40 @@ const Register: React.FC = () => {
           onChange={handleChange}
           fullWidth
           margin="normal"
-          required // Optional: Add required validation
+          required
         />
         <TextField
-          label="Key"
+          label="Username"
           name="key"
           value={formData.key}
           onChange={handleChange}
           fullWidth
           margin="normal"
-          required // Optional: Add required validation
+          required
         />
         <TextField
-          label="Secret"
+          label="Password"
           name="secret"
           type="password"
           value={formData.secret}
           onChange={handleChange}
           fullWidth
           margin="normal"
-          required // Optional: Add required validation
+          required
         />
         {error && <Typography color="error">{error}</Typography>}
         <Button variant="contained" color="primary" type="submit">
           Register
         </Button>
       </form>
+      <Box mt={2}>
+        <Typography variant="body2">
+          Already have an account?{" "}
+          <Link to="/login" className={styles.link}>
+            Login here
+          </Link>
+        </Typography>
+      </Box>
     </Box>
   );
 };
