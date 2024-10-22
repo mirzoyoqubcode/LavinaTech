@@ -1,0 +1,11 @@
+.bookList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.bookCard {
+  max-width: 300px;
+  flex: 1 1 auto;
+}

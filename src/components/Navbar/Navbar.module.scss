@@ -1,0 +1,25 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  flex-grow: 1;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem; // Space between buttons
+}
+
+.search {
+  width: 200px;
+}
+
+@media (max-width: 600px) {
+  .search {
+    width: 100px;
+  }
+}
