@@ -1,11 +1,13 @@
+// src/components/Login/Login.tsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./Login.module.scss";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { TextField, Button, Typography, Box, Grid } from "@mui/material";
 import md5 from "crypto-js/md5";
+import { motion } from "framer-motion";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,11 +28,9 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const method = "GET";
     const url = "/myself";
     const sign = generateSignature(method, url, secret);
-    console.log("Sign:", sign);
 
     try {
       const response = await axios.get("https://no23.lavina.tech/myself", {
@@ -39,60 +39,79 @@ const Login: React.FC = () => {
           Sign: sign,
         },
       });
-      console.log(response.data.data);
 
       const data = response.data.data;
-      console.log("Response:", data);
       dispatch(setCredentials({ key: data.key, secret: data.secret }));
-      console.log("Login successful");
       navigate("/");
     } catch (err: any) {
-      console.error("Login error:", err.response ? err.response.data : err);
-      setError(
-        err.response?.data?.message || "Bad credentials. Please try again."
-      );
+      setError(err.response?.data?.message || "Please try again.");
     }
   };
 
   return (
     <Box className={styles.container}>
-      <Typography variant="h4">Login</Typography>
-      <form onSubmit={handleLogin}>
-        <TextField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Username"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={secret}
-          onChange={(e) => setSecret(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <Button variant="contained" color="primary" type="submit">
-          Login
-        </Button>
-        {error && <Typography color="error">{error}</Typography>}
-      </form>
-      <Box mt={2}>
-        <Typography variant="body2">
-          Don't have an account?{" "}
-          <Link to="/register" className={styles.link}>
-            Register here
-          </Link>
-        </Typography>
-      </Box>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Typography variant="h4">Login</Typography>
+        <form onSubmit={handleLogin}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Username"
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Password"
+                type="password"
+                value={secret}
+                onChange={(e) => setSecret(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                fullWidth
+              >
+                Login
+              </Button>
+            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Typography color="error">{error}</Typography>
+              </Grid>
+            )}
+          </Grid>
+        </form>
+        <Box mt={2}>
+          <Typography variant="body2">
+            Don't have an account?{" "}
+            <Link to="/register" className={styles.link}>
+              Register here
+            </Link>
+          </Typography>
+        </Box>
+      </motion.div>
     </Box>
   );
 };

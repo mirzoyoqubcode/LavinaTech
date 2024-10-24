@@ -6,7 +6,6 @@ import Main from "./components/Main/Main";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import Login from "./components/Login/Login";
-import AddBook from "./components/AddBook/AddBook";
 
 const App: React.FC = () => {
   const { key } = useSelector((state: RootState) => state.auth);
@@ -20,8 +19,7 @@ const App: React.FC = () => {
           element={key ? <Navigate to="/" /> : <Register />}
         />
         <Route path="/login" element={key ? <Navigate to="/" /> : <Login />} />
-        <Route path="/" element={<Main />} />
-        <Route path="/addbook" element={<AddBook />} />
+        <Route path="/" element={key ? <Main /> : <Navigate to="/login" />} />
       </Routes>
     </Container>
   );

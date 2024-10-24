@@ -1,10 +1,10 @@
-// src/components/Register/Register.tsx
 import React, { useState } from "react";
 import axios from "axios";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import { TextField, Button, Box, Typography, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import styles from "./Register.module.scss";
 
 const Register: React.FC = () => {
@@ -41,9 +41,7 @@ const Register: React.FC = () => {
       );
 
       const { key, secret } = response.data.data;
-
       dispatch(setCredentials({ key, secret }));
-
       navigate("/");
     } catch (err: any) {
       setError(
@@ -54,60 +52,83 @@ const Register: React.FC = () => {
 
   return (
     <Box className={styles.registerForm}>
-      <Typography variant="h4" gutterBottom>
-        Register New User
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Username"
-          name="key"
-          value={formData.key}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Password"
-          name="secret"
-          type="password"
-          value={formData.secret}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        {error && <Typography color="error">{error}</Typography>}
-        <Button variant="contained" color="primary" type="submit">
-          Register
-        </Button>
-      </form>
-      <Box mt={2}>
-        <Typography variant="body2">
-          Already have an account?{" "}
-          <Link to="/login" className={styles.link}>
-            Login here
-          </Link>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Register New User
         </Typography>
-      </Box>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Username"
+                name="key"
+                value={formData.key}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Password"
+                name="secret"
+                type="password"
+                value={formData.secret}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Typography color="error">{error}</Typography>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                fullWidth
+              >
+                Register
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+        <Box mt={2}>
+          <Typography variant="body2">
+            Already have an account?{" "}
+            <Link to="/login" className={styles.link}>
+              Login here
+            </Link>
+          </Typography>
+        </Box>
+      </motion.div>
     </Box>
   );
 };
