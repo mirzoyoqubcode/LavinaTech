@@ -1,4 +1,3 @@
-// src/components/Navbar/Navbar.tsx
 import React, { useState } from "react";
 import {
   AppBar,
@@ -11,6 +10,7 @@ import {
   CardContent,
   CardMedia,
   InputAdornment,
+  Grid,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCredentials } from "../../redux/authSlice";
@@ -129,12 +129,15 @@ const Navbar: React.FC = () => {
           variant="outlined"
           size="small"
           value={searchTitle}
+          placeholder="Search by title"
           onChange={(e) => setSearchTitle(e.target.value)}
           onKeyPress={handleKeyPress}
           sx={{
             backgroundColor: "white",
-            borderRadius: "4px",
+            borderRadius: "10px",
             marginRight: "16px",
+            outline: "none",
+            borderColor: "#795548",
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: "#795548",
@@ -165,50 +168,80 @@ const Navbar: React.FC = () => {
       </Toolbar>
 
       {searchResults.length > 0 && (
-        <Box sx={{ display: "flex", flexWrap: "wrap", padding: "16px" }}>
-          {searchResults.map((book: any) => (
-            <motion.div
-              key={book.isbn}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card
-                sx={{
-                  maxWidth: 200,
-                  margin: "8px",
-                  backgroundColor: "#ffebee",
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={book.cover || "https://via.placeholder.com/140"}
-                  alt={book.title}
-                />
-                <CardContent>
-                  <Typography variant="h6">{book.title}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Author: {book.author}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    ISBN: {book.isbn}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleAddBook(book.isbn)}
+        <Box
+          sx={{
+            padding: "32px",
+            backgroundColor: "#f9f9f9",
+            minHeight: "60vh",
+          }}
+        >
+          <Grid container spacing={4} justifyContent="center">
+            {searchResults.map((book: any) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={book.isbn}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Card
+                    sx={{
+                      maxWidth: 250,
+                      margin: "8px auto",
+                      borderRadius: "12px",
+                      boxShadow: "0 6px 12px rgba(0,0,0,0.15)",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
                   >
-                    Add
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    <CardMedia
+                      component="img"
+                      height="180"
+                      image={book.cover || "https://via.placeholder.com/180"}
+                      alt={book.title}
+                      sx={{ borderRadius: "12px 12px 0 0" }}
+                    />
+                    <CardContent sx={{ textAlign: "center", padding: "16px" }}>
+                      <Typography variant="h6" gutterBottom>
+                        {book.title}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Author: {book.author}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        ISBN: {book.isbn}
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                          marginTop: "16px",
+                          backgroundColor: "#795548",
+                          "&:hover": { backgroundColor: "#5d4037" },
+                        }}
+                        onClick={() => handleAddBook(book.isbn)}
+                      >
+                        Add to Bookshelf
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       )}
       {error && (
-        <Typography color="error" sx={{ padding: "16px", marginTop: "10px" }}>
+        <Typography
+          color="error"
+          sx={{
+            padding: "16px",
+            marginTop: "10px",
+            textAlign: "center",
+            backgroundColor: "#f9dcdc",
+            borderRadius: "8px",
+          }}
+        >
           {error}
         </Typography>
       )}
